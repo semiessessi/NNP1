@@ -26,6 +26,11 @@ float TestFunctionXor( const float fX, const float fY )
     return 2.0f * static_cast< float >( ( ( fX < 0.0f ) ? 1 : 0 ) ^ ( ( fY < 0.0f ) ? 1 : 0 ) ) - 1.0f;
 }
 
+float TestFunctionOne( const float, const float )
+{
+    return 1.0f;
+}
+
 int main( const char* const* const, const int )
 {
     float fInX = 0.0f;
@@ -57,6 +62,37 @@ int main( const char* const* const, const int )
     const int kiIterations = 100000;
     const int kiHalf = kiIterations >> 1;
     const float kfLearningRate = 0.1f;
+
+    {
+        int iRight = 0;
+        for( int i = 0; i < kiIterations; ++i )
+        {
+            fInX = ( ( rand( ) & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInY = ( ( rand( ) & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            xNetwork.Cycle( );
+            const float fTestResult = TestFunctionOne( fInX, fInY );
+            xNetwork.BackCycle( fTestResult, kfLearningRate );
+            //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
+
+            if( xPerceptronD.GetResult() == fTestResult )
+            {
+                ++iRight;
+            }
+            else
+            {
+                iRight = 0;
+            }
+        }
+
+        if( iRight > kiHalf )
+        {
+            printf( "Learned 1 after %d iterations\r\n", kiIterations - iRight );
+        }
+        else
+        {
+            printf( "Failed to learn 1!\r\n" );
+        }
+    }
 
     {
         int iRight = 0;
