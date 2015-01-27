@@ -7,10 +7,57 @@
     <Filter Include="NNP1\Core">
       <UniqueIdentifier>{18237d37-85db-4eff-b833-7cf085ca1b3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NNL">
+      <UniqueIdentifier>{b1e6c308-b1e4-45ee-97cb-f7d7477fd699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NNL\Neuron">
+      <UniqueIdentifier>{29f7b6cd-17f0-420f-ae02-85c54c5739b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NNL\Maths">
+      <UniqueIdentifier>{36b10b58-261f-4fe3-b2d5-84c50cc5d5c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NNL\Layer">
+      <UniqueIdentifier>{15e28be4-9f67-4a0d-b132-fa3916bedd92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NNL\Network">
+      <UniqueIdentifier>{853a4bdf-2aa3-4736-8123-f44010794595}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Core\EntryPoint.cpp">
       <Filter>NNP1\Core</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\NNL\Maths\Sigmoid.h">
+      <Filter>NNL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Maths\SmoothSteps.h">
+      <Filter>NNL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Maths\HeavisideStep.h">
+      <Filter>NNL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\Constant.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\Neuron.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\Perceptron.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\Input.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Layer\Layer.h">
+      <Filter>NNL\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Network\FeedForward.h">
+      <Filter>NNL\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Maths\Random.h">
+      <Filter>NNL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
