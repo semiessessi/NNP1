@@ -1,6 +1,7 @@
 // Copyright (c) 2015 Cranium Software
 
 #include "Layer/Layer.h"
+#include "Maths/Random.h"
 #include "Neuron/Constant.h"
 #include "Neuron/Input.h"
 #include "Neuron/Perceptron.h"
@@ -26,7 +27,7 @@ float TestFunctionXor( const float fX, const float fY )
     return 2.0f * static_cast< float >( ( ( fX < 0.0f ) ? 1 : 0 ) ^ ( ( fY < 0.0f ) ? 1 : 0 ) ) - 1.0f;
 }
 
-int main( const char* const* const, const int )
+int main( const int, const char* const* const )
 {
     float fInX = 0.0f;
     float fInY = 1.0f;
@@ -62,8 +63,8 @@ int main( const char* const* const, const int )
         int iRight = 0;
         for( int i = 0; i < kiIterations; ++i )
         {
-            fInX = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
-            fInY = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInX = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInY = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
             xNetwork.Cycle();
             const float fTestResult = TestFunctionAnd( fInX, fInY );
             xNetwork.BackCycle( fTestResult, kfLearningRate );
@@ -93,8 +94,8 @@ int main( const char* const* const, const int )
         int iRight = 0;
         for( int i = 0; i < kiIterations; ++i )
         {
-            fInX = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
-            fInY = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInX = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInY = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
             xNetwork.Cycle();
             const float fTestResult = TestFunctionOr( fInX, fInY );
             xNetwork.BackCycle( fTestResult, kfLearningRate );
@@ -124,8 +125,8 @@ int main( const char* const* const, const int )
         int iRight = 0;
         for( int i = 0; i < kiIterations; ++i )
         {
-            fInX = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
-            fInY = ( ( rand() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInX = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInY = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
             xNetwork.Cycle();
             const float fTestResult = TestFunctionNand( fInX, fInY );
             xNetwork.BackCycle( fTestResult, kfLearningRate );
@@ -155,8 +156,8 @@ int main( const char* const* const, const int )
         int iRight = 0;
         for( int i = 0; i < kiIterations; ++i )
         {
-            fInX = ( ( rand( ) & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
-            fInY = ( ( rand( ) & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInX = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
+            fInY = ( ( NNL::WeakRandomInt() & 0xFF ) > 0x7F ) ? 1.0f : -1.0f;
             xNetwork.Cycle( );
             const float fTestResult = TestFunctionXor( fInX, fInY );
             xNetwork.BackCycle( fTestResult, kfLearningRate );
