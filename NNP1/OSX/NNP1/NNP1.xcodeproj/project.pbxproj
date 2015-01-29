@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		416D8F571A7938DF000B81F1 /* EntryPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416D8F561A7938DF000B81F1 /* EntryPoint.cpp */; };
 		416D8F631A796CD1000B81F1 /* MNIST.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416D8F621A796CD1000B81F1 /* MNIST.cpp */; };
+		416D8F681A7A6BEB000B81F1 /* TestMNIST.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416D8F661A7A6BEB000B81F1 /* TestMNIST.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,10 @@
 		416D8F561A7938DF000B81F1 /* EntryPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntryPoint.cpp; sourceTree = "<group>"; };
 		416D8F611A796C09000B81F1 /* MNIST.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MNIST.h; path = Data/MNIST.h; sourceTree = "<group>"; };
 		416D8F621A796CD1000B81F1 /* MNIST.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MNIST.cpp; path = Data/MNIST.cpp; sourceTree = "<group>"; };
+		416D8F661A7A6BEB000B81F1 /* TestMNIST.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestMNIST.cpp; sourceTree = "<group>"; };
+		416D8F671A7A6BEB000B81F1 /* TestMNIST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestMNIST.h; sourceTree = "<group>"; };
+		416D8F691A7A7511000B81F1 /* SigmoidNeuron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SigmoidNeuron.h; sourceTree = "<group>"; };
+		416D8F701A7A919B000B81F1 /* AnalyticBackPropagator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticBackPropagator.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +85,8 @@
 		416D8F441A7938CD000B81F1 /* NNL */ = {
 			isa = PBXGroup;
 			children = (
-				416D8F601A796BF0000B81F1 /* Data */,
 				416D8F451A7938CD000B81F1 /* .gitignore */,
+				416D8F601A796BF0000B81F1 /* Data */,
 				416D8F461A7938CD000B81F1 /* Layer */,
 				416D8F481A7938CD000B81F1 /* Maths */,
 				416D8F4D1A7938CD000B81F1 /* Network */,
@@ -121,10 +126,12 @@
 		416D8F4F1A7938CD000B81F1 /* Neuron */ = {
 			isa = PBXGroup;
 			children = (
+				416D8F701A7A919B000B81F1 /* AnalyticBackPropagator.h */,
 				416D8F501A7938CD000B81F1 /* Constant.h */,
 				416D8F511A7938CD000B81F1 /* Input.h */,
 				416D8F521A7938CD000B81F1 /* Neuron.h */,
 				416D8F531A7938CD000B81F1 /* Perceptron.h */,
+				416D8F691A7A7511000B81F1 /* SigmoidNeuron.h */,
 			);
 			path = Neuron;
 			sourceTree = "<group>";
@@ -142,6 +149,8 @@
 			isa = PBXGroup;
 			children = (
 				416D8F561A7938DF000B81F1 /* EntryPoint.cpp */,
+				416D8F661A7A6BEB000B81F1 /* TestMNIST.cpp */,
+				416D8F671A7A6BEB000B81F1 /* TestMNIST.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -212,6 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				416D8F571A7938DF000B81F1 /* EntryPoint.cpp in Sources */,
+				416D8F681A7A6BEB000B81F1 /* TestMNIST.cpp in Sources */,
 				416D8F631A796CD1000B81F1 /* MNIST.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -342,6 +352,7 @@
 				416D8F421A7938B9000B81F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

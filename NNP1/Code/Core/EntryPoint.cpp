@@ -1,30 +1,33 @@
 // Copyright (c) 2015 Cranium Software
 
+#include "TestMNIST.h"
+
 #include "Layer/Layer.h"
 #include "Maths/Random.h"
 #include "Neuron/Constant.h"
 #include "Neuron/Input.h"
 #include "Neuron/Perceptron.h"
+#include "Neuron/SigmoidNeuron.h"
 #include "Network/FeedForward.h"
 
 float TestFunctionAnd( const float fX, const float fY )
 {
-    return 2.0f * static_cast< float >( ( ( fX < 0.0f ) ? 1 : 0 ) & ( ( fY < 0.0f ) ? 1 : 0 ) ) - 1.0f;
+    return 2.0f * static_cast< float >( ( ( fX > 0.0f ) ? 1 : 0 ) & ( ( fY > 0.0f ) ? 1 : 0 ) ) - 1.0f;
 }
 
 float TestFunctionOr( const float fX, const float fY )
 {
-    return 2.0f * static_cast< float >( ( ( fX < 0.0f ) ? 1 : 0 ) | ( ( fY < 0.0f ) ? 1 : 0 ) ) - 1.0f;
+    return 2.0f * static_cast< float >( ( ( fX > 0.0f ) ? 1 : 0 ) | ( ( fY > 0.0f ) ? 1 : 0 ) ) - 1.0f;
 }
 
 float TestFunctionNand( const float fX, const float fY )
 {
-    return 2.0f * static_cast< float >( !( ( ( fX < 0.0f ) ? 1 : 0 ) & ( ( fY < 0.0f ) ? 1 : 0 ) ) ) - 1.0f;
+    return 2.0f * static_cast< float >( !( ( ( fX > 0.0f ) ? 1 : 0 ) & ( ( fY > 0.0f ) ? 1 : 0 ) ) ) - 1.0f;
 }
 
 float TestFunctionXor( const float fX, const float fY )
 {
-    return 2.0f * static_cast< float >( ( ( fX < 0.0f ) ? 1 : 0 ) ^ ( ( fY < 0.0f ) ? 1 : 0 ) ) - 1.0f;
+    return 2.0f * static_cast< float >( ( ( fX > 0.0f ) ? 1 : 0 ) ^ ( ( fY > 0.0f ) ? 1 : 0 ) ) - 1.0f;
 }
 
 float TestFunctionOne( const float, const float )
@@ -34,14 +37,22 @@ float TestFunctionOne( const float, const float )
 
 int main( const int, const char* const* const )
 {
+#define USE_CLASSIC_PERCEPTRON ( 1 )
     float fInX = 0.0f;
     float fInY = 1.0f;
     NNL::Input xInX( &fInX );
     NNL::Input xInY( &fInY );
+#if USE_CLASSIC_PERCEPTRON
     NNL::Perceptron< 2 > xPerceptronA;
     NNL::Perceptron< 2 > xPerceptronB;
     NNL::Perceptron< 2 > xPerceptronC;
     NNL::Perceptron< 3 > xPerceptronD;
+#else
+    NNL::SigmoidNeuron< 2 > xPerceptronA;
+    NNL::SigmoidNeuron< 2 > xPerceptronB;
+    NNL::SigmoidNeuron< 2 > xPerceptronC;
+    NNL::SigmoidNeuron< 3 > xPerceptronD;
+#endif
     NNL::Layer xLayer1;
     NNL::Layer xLayer2;
     NNL::Layer xLayer3;
@@ -106,7 +117,7 @@ int main( const int, const char* const* const )
             xNetwork.BackCycle( fTestResult, kfLearningRate );
             //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
 
-            if( xPerceptronD.GetResult() == fTestResult )
+            if( ( ( xPerceptronD.GetResult() > 0.0f ) ? 1.0f : -1.0f ) == fTestResult )
             {
                 ++iRight;
             }
@@ -137,7 +148,7 @@ int main( const int, const char* const* const )
             xNetwork.BackCycle( fTestResult, kfLearningRate );
             //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
 
-            if( xPerceptronD.GetResult() == fTestResult )
+            if( ( ( xPerceptronD.GetResult() > 0.0f ) ? 1.0f : -1.0f ) == fTestResult )
             {
                 ++iRight;
             }
@@ -168,7 +179,7 @@ int main( const int, const char* const* const )
             xNetwork.BackCycle( fTestResult, kfLearningRate );
             //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
 
-            if( xPerceptronD.GetResult() == fTestResult )
+            if( ( ( xPerceptronD.GetResult() > 0.0f ) ? 1.0f : -1.0f ) == fTestResult )
             {
                 ++iRight;
             }
@@ -199,7 +210,7 @@ int main( const int, const char* const* const )
             xNetwork.BackCycle( fTestResult, kfLearningRate );
             //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
 
-            if( xPerceptronD.GetResult() == fTestResult )
+            if( ( ( xPerceptronD.GetResult() > 0.0f ) ? 1.0f : -1.0f ) == fTestResult )
             {
                 ++iRight;
             }
@@ -219,5 +230,16 @@ int main( const int, const char* const* const )
         }
     }
 
+#if 0
+    {
+        printf( "Starting MNIST test...\r\n" );
+        const int iSuccesses = TestMNIST();
+        const float fPercent = 100.0f * static_cast< float >( iSuccesses )
+            / static_cast< float >( kiMNISTTestSetSize );
+        printf( "Correctly identified %d out of %d images (%f)\r\n",
+            iSuccesses, kiMNISTTestSetSize, fPercent );
+    }
+#endif
+    
     return 0;
 }
