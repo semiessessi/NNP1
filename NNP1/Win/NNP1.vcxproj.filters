@@ -22,9 +22,18 @@
     <Filter Include="NNL\Network">
       <UniqueIdentifier>{853a4bdf-2aa3-4736-8123-f44010794595}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NNL\Data">
+      <UniqueIdentifier>{88883d1d-1c69-4ebd-ae05-e0990bb60ddc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Core\EntryPoint.cpp">
+      <Filter>NNP1\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\NNL\Data\MNIST.cpp">
+      <Filter>NNL\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Core\TestMNIST.cpp">
       <Filter>NNP1\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,6 +67,18 @@
     </ClInclude>
     <ClInclude Include="..\..\NNL\Maths\Random.h">
       <Filter>NNL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\AnalyticBackPropagator.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\SigmoidNeuron.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\NNL\Data\MNIST.h">
+      <Filter>NNL\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Core\TestMNIST.h">
+      <Filter>NNP1\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
