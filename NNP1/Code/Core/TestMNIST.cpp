@@ -10,7 +10,7 @@
 
 #include <cstdio>
 
-static const int kiHiddenLayerSize = 1500;
+static const int kiHiddenLayerSize = 20;
 static const int kiOutputLayerSize = 10;
 static const float kiLearningRate = 0.1f;
 
@@ -71,7 +71,10 @@ int TestMNIST()
     for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
     {
         // SE - TEMP: ...
-        printf( "Evaluating training set %d/%d...\r\n", i, kiMNISTTrainingSetSize );
+        if( ( i % 100 ) == 0 )
+        {
+            printf( "Evaluating training set %d/%d...\r\n", i + 1, kiMNISTTrainingSetSize );
+        }
         
         CopyInputs( afImageInputs, pxTrainingImages[ i ].maaucPixels );
         

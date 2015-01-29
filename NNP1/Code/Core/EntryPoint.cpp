@@ -37,7 +37,7 @@ float TestFunctionOne( const float, const float )
 
 int main( const int, const char* const* const )
 {
-#define USE_CLASSIC_PERCEPTRON ( 1 )
+#define USE_CLASSIC_PERCEPTRON ( 0 )
     float fInX = 0.0f;
     float fInY = 1.0f;
     NNL::Input xInX( &fInX );
@@ -86,7 +86,7 @@ int main( const int, const char* const* const )
             xNetwork.BackCycle( fTestResult, kfLearningRate );
             //printf( "%f %f\r\n", xPerceptron.GetResult(), fTestResult );
 
-            if( xPerceptronD.GetResult() == fTestResult )
+            if( ( ( xPerceptronD.GetResult() > 0.0f ) ? 1.0f : -1.0f ) == fTestResult )
             {
                 ++iRight;
             }
@@ -230,7 +230,6 @@ int main( const int, const char* const* const )
         }
     }
 
-#if 0
     {
         printf( "Starting MNIST test...\r\n" );
         const int iSuccesses = TestMNIST();
@@ -239,7 +238,6 @@ int main( const int, const char* const* const )
         printf( "Correctly identified %d out of %d images (%f)\r\n",
             iSuccesses, kiMNISTTestSetSize, fPercent );
     }
-#endif
     
     return 0;
 }
