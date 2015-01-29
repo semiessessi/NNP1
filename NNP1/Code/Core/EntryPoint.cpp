@@ -235,7 +235,7 @@ int main( const int, const char* const* const )
         const int iSuccesses = TestMNIST();
         const float fPercent = 100.0f * static_cast< float >( iSuccesses )
             / static_cast< float >( kiMNISTTestSetSize );
-        printf( "Correctly identified %d out of %d images (%f)\r\n",
+        printf( "Correctly identified %d out of %d images (%.2f%%)\r\n",
             iSuccesses, kiMNISTTestSetSize, fPercent );
     }
     

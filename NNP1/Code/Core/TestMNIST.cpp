@@ -10,9 +10,9 @@
 
 #include <cstdio>
 
-static const int kiHiddenLayerSize = 20;
+static const int kiHiddenLayerSize = 32;
 static const int kiOutputLayerSize = 10;
-static const float kiLearningRate = 0.1f;
+static const float kfLearningRate = 0.2f;
 
 void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 {
@@ -21,7 +21,7 @@ void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
         for( int j = 0; j < 28; ++j )
         {
             pfFloats[ j + i * 28 ] =
-                static_cast< float >( aaucPixels[ i ][ j ] ) / 255.0f;
+                static_cast< float >( aaucPixels[ i ][ j ] ) / 127.5f - 1.0f;
         }
     }
 }
@@ -71,7 +71,7 @@ int TestMNIST()
     for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
     {
         // SE - TEMP: ...
-        if( ( i % 100 ) == 0 )
+        if( ( ( i + 1 ) % 500 ) == 0 )
         {
             printf( "Evaluating training set %d/%d...\r\n", i + 1, kiMNISTTrainingSetSize );
         }
@@ -87,7 +87,8 @@ int TestMNIST()
         // back propogate
         for( int j = 0; j < kiOutputLayerSize; ++j )
         {
-            pxOutputLayer[ ucLabel ].BackCycle( ( j == ucLabel ) ? 1.0f : -1.0f, kiLearningRate );
+            const float fExpectedSignal = ( j == ucLabel ) ? 1.0f : -1.0f;
+            pxOutputLayer[ ucLabel ].BackCycle( fExpectedSignal, kfLearningRate );
         }
     }
     
@@ -112,17 +113,29 @@ int TestMNIST()
         
         // what was the label?
         bool bCorrect = true;
+        int iGuess = -1;
         const unsigned char ucLabel = pxTestLabels[ i ].mucLabel;
         for( int j = 0; j < kiOutputLayerSize; ++j )
         {
+            bool bGuessedThis = pxOutputLayer[ j ].GetResult() > 0.0f ;
             if( j == ucLabel )
             {
-                bCorrect = bCorrect && ( pxOutputLayer[ j ].GetResult() > 0.0f );
+                bCorrect = bCorrect && bGuessedThis;
             }
             else
             {
-                bCorrect = bCorrect && ( pxOutputLayer[ j ].GetResult() <= 0.0f );
+                bCorrect = bCorrect && !bGuessedThis;
             }
+            
+            if( bGuessedThis )
+            {
+                iGuess = i;
+            }
+        }
+        
+        if( !bCorrect )
+        {
+            printf( "Guessed %d but it was %d\r\n", iGuess, ucLabel );
         }
         
         iSuccessCount += bCorrect ? 1 : 0;
