@@ -203,6 +203,7 @@
     <ClInclude Include="..\..\NNL\Maths\Sigmoid.h" />
     <ClInclude Include="..\..\NNL\Maths\SmoothSteps.h" />
     <ClInclude Include="..\..\NNL\Network\FeedForward.h" />
+    <ClInclude Include="..\..\NNL\Network\AnalyticBackpropagatingNetwork.h" />
     <ClInclude Include="..\..\NNL\Neuron\AnalyticBackPropagator.h" />
     <ClInclude Include="..\..\NNL\Neuron\Constant.h" />
     <ClInclude Include="..\..\NNL\Neuron\Input.h" />

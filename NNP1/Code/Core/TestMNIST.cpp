@@ -13,7 +13,7 @@
 #include <cstdio>
 
 static const int kiTrainingRuns = 25;
-static const int kiHiddenLayerSize = 16;
+static const int kiHiddenLayerSize = 30;
 static const int kiOutputLayerSize = 10;
 static const float kfLearningRate = 0.01f;
 

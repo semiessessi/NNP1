@@ -83,5 +83,8 @@
     <ClInclude Include="..\..\NNL\Neuron\LinearNeuron.h">
       <Filter>NNL\Neuron</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\NNL\Network\AnalyticBackpropagatingNetwork.h">
+      <Filter>NNL\Network</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
