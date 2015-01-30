@@ -6,11 +6,13 @@
 #include "Layer/Layer.h"
 #include "Network/FeedForward.h"
 #include "Neuron/Input.h"
+#include "Neuron/LinearNeuron.h"
 #include "Neuron/SigmoidNeuron.h"
 
 #include <cstdio>
 
-static const int kiHiddenLayerSize = 32;
+static const int kiTrainingRuns = 5000;
+static const int kiHiddenLayerSize = 16;
 static const int kiOutputLayerSize = 10;
 static const float kfLearningRate = 0.2f;
 
@@ -68,30 +70,53 @@ int TestMNIST()
     NNL::MNIST_Label* pxTrainingLabels = NNL::LoadMNISTLabels( "train-labels-idx1-ubyte" );
     
     // train network
-    for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
+    int iCount = 0;
+    for( int k = 0; k < kiTrainingRuns; ++k )
     {
-        // SE - TEMP: ...
-        if( ( ( i + 1 ) % 500 ) == 0 )
+        for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
         {
-            printf( "Evaluating training set %d/%d...\r\n", i + 1, kiMNISTTrainingSetSize );
-        }
-        
-        CopyInputs( afImageInputs, pxTrainingImages[ i ].maaucPixels );
-        
-        // run network
-        xNetwork.Cycle();
-        
-        // what was the label?
-        const unsigned char ucLabel = pxTrainingLabels[ i ].mucLabel;
-        
-        // back propogate
-        for( int j = 0; j < kiOutputLayerSize; ++j )
-        {
-            const float fExpectedSignal = ( j == ucLabel ) ? 1.0f : -1.0f;
-            pxOutputLayer[ ucLabel ].BackCycle( fExpectedSignal, kfLearningRate );
+            // SE - TEMP: ...
+            if( ( ( i + 1 ) % 50 ) == 0 )
+            {
+                printf( "Evaluating training set %d/%d... %d correct in this batch\r\n", i + 1, kiMNISTTrainingSetSize, iCount );
+                iCount = 0;
+            }
+
+            CopyInputs( afImageInputs, pxTrainingImages[ i ].maaucPixels );
+
+            // run network
+            xNetwork.Cycle();
+
+            // what was the label?
+            const unsigned char ucLabel = pxTrainingLabels[ i ].mucLabel;
+
+            // back propogate
+            bool bCorrect = true;
+            for( int j = 0; j < kiOutputLayerSize; ++j )
+            {
+                const float fExpectedSignal = ( j == ucLabel ) ? 1.0f : -1.0f;
+                if( j == ucLabel )
+                {
+                    if( pxOutputLayer[ ucLabel ].GetResult() <= 0.0f )
+                    {
+                        bCorrect = false;
+                    }
+                }
+                else if( pxOutputLayer[ ucLabel ].GetResult() > 0.0f )
+                {
+                    bCorrect = false;
+                }
+
+                pxOutputLayer[ ucLabel ].BackCycle( fExpectedSignal, kfLearningRate );
+            }
+
+            if( bCorrect )
+            {
+                ++iCount;
+            }
         }
     }
-    
+
     NNL::FreeMNISTImages( pxTrainingImages );
     NNL::FreeMNISTLabels( pxTrainingLabels );
     
@@ -127,9 +152,9 @@ int TestMNIST()
                 bCorrect = bCorrect && !bGuessedThis;
             }
             
-            if( bGuessedThis )
+            if( bCorrect )
             {
-                iGuess = i;
+                iGuess = j;
             }
         }
         

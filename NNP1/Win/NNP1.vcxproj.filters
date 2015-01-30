@@ -80,5 +80,8 @@
     <ClInclude Include="..\Code\Core\TestMNIST.h">
       <Filter>NNP1\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\NNL\Neuron\LinearNeuron.h">
+      <Filter>NNL\Neuron</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

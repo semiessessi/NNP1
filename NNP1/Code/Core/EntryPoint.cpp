@@ -6,6 +6,7 @@
 #include "Maths/Random.h"
 #include "Neuron/Constant.h"
 #include "Neuron/Input.h"
+#include "Neuron/LinearNeuron.h"
 #include "Neuron/Perceptron.h"
 #include "Neuron/SigmoidNeuron.h"
 #include "Network/FeedForward.h"
