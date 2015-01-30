@@ -7,14 +7,15 @@
 #include "Network/FeedForward.h"
 #include "Neuron/Input.h"
 #include "Neuron/LinearNeuron.h"
+#include "Neuron/Perceptron.h"
 #include "Neuron/SigmoidNeuron.h"
 
 #include <cstdio>
 
-static const int kiTrainingRuns = 5000;
+static const int kiTrainingRuns = 25;
 static const int kiHiddenLayerSize = 16;
 static const int kiOutputLayerSize = 10;
-static const float kfLearningRate = 0.2f;
+static const float kfLearningRate = 0.01f;
 
 void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 {
@@ -76,7 +77,7 @@ int TestMNIST()
         for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
         {
             // SE - TEMP: ...
-            if( ( ( i + 1 ) % 50 ) == 0 )
+            if( ( ( i + 1 ) % 1000 ) == 0 )
             {
                 printf( "Evaluating training set %d/%d... %d correct in this batch\r\n", i + 1, kiMNISTTrainingSetSize, iCount );
                 iCount = 0;
@@ -97,17 +98,17 @@ int TestMNIST()
                 const float fExpectedSignal = ( j == ucLabel ) ? 1.0f : -1.0f;
                 if( j == ucLabel )
                 {
-                    if( pxOutputLayer[ ucLabel ].GetResult() <= 0.0f )
+                    if( pxOutputLayer[ j ].GetResult() <= 0.0f )
                     {
                         bCorrect = false;
                     }
                 }
-                else if( pxOutputLayer[ ucLabel ].GetResult() > 0.0f )
+                else if( pxOutputLayer[ j ].GetResult() > 0.0f )
                 {
                     bCorrect = false;
                 }
 
-                pxOutputLayer[ ucLabel ].BackCycle( fExpectedSignal, kfLearningRate );
+                pxOutputLayer[ j ].BackCycle( fExpectedSignal, kfLearningRate );
             }
 
             if( bCorrect )
