@@ -36,6 +36,9 @@
     <ClCompile Include="..\Code\Core\TestMNIST.cpp">
       <Filter>NNP1\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\NNL\Network\FeedForward.cpp">
+      <Filter>NNL\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\NNL\Maths\Sigmoid.h">

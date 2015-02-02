@@ -192,6 +192,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\NNL\Data\MNIST.cpp" />
+    <ClCompile Include="..\..\NNL\Network\FeedForward.cpp" />
     <ClCompile Include="..\Code\Core\EntryPoint.cpp" />
     <ClCompile Include="..\Code\Core\TestMNIST.cpp" />
   </ItemGroup>

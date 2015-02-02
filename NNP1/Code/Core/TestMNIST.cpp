@@ -4,6 +4,7 @@
 
 #include "Data/MNIST.h"
 #include "Layer/Layer.h"
+#include "Network/AnalyticBackpropagatingNetwork.h"
 #include "Network/FeedForward.h"
 #include "Neuron/Input.h"
 #include "Neuron/LinearNeuron.h"
@@ -12,10 +13,12 @@
 
 #include <cstdio>
 
-static const int kiTrainingRuns = 25;
-static const int kiHiddenLayerSize = 30;
+static const int kiTrainingRuns = 400;
+static const int kiHiddenLayerSize = 40;
 static const int kiOutputLayerSize = 10;
-static const float kfLearningRate = 0.01f;
+static const float kfLearningRate = 0.004f;
+
+#define USE_OPTIMISED_NETWORK ( 0 )
 
 void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 {
@@ -31,10 +34,15 @@ void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 
 int TestMNIST()
 {
+    float afImageInputs[ 28 * 28 ] = { 0 };
+
+#if USE_OPTIMISED_NETWORK
+    const int aiSizes[] = { kiHiddenLayerSize, kiOutputLayerSize };
+    AnalyticBackpropagatingNetwork< 2, 28* 28 > xNetwork( aiSizes );
+#else
     // create neurons
     // create input neurons and hook up input values.
     NNL::Input* pxInputs = new NNL::Input[ 28 * 28 ];
-    float afImageInputs[ 28 * 28 ] = { 0 };
     for( int i = 0; i < 28; ++i )
     {
         for( int j = 0; j < 28; ++j )
@@ -65,13 +73,15 @@ int TestMNIST()
     xNetwork.AddLayer( xInput );
     xNetwork.AddLayer( xHidden );
     xNetwork.AddLayer( xOutput );
-    
+#endif
+
     // load data
     NNL::MNIST_Image* pxTrainingImages = NNL::LoadMNISTImages( "train-images-idx3-ubyte" );
     NNL::MNIST_Label* pxTrainingLabels = NNL::LoadMNISTLabels( "train-labels-idx1-ubyte" );
-    
+
     // train network
     int iCount = 0;
+    xNetwork.Load();
     for( int k = 0; k < kiTrainingRuns; ++k )
     {
         for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
@@ -86,36 +96,66 @@ int TestMNIST()
             CopyInputs( afImageInputs, pxTrainingImages[ i ].maaucPixels );
 
             // run network
+#if USE_OPTIMISED_NETWORK
+            xNetwork.FeedForward( afImageInputs, NNL::Sigmoid );
+#else
             xNetwork.Cycle();
+#endif
 
             // what was the label?
             const unsigned char ucLabel = pxTrainingLabels[ i ].mucLabel;
 
             // back propogate
             bool bCorrect = true;
+            float fMax = -FLT_MAX;
+            int iMax = -1;
+
+#if USE_OPTIMISED_NETWORK
+            float afOutputs[ kiOutputLayerSize ] = { 0 };
+#endif
+
             for( int j = 0; j < kiOutputLayerSize; ++j )
             {
+#if USE_OPTIMISED_NETWORK
+                afOutputs[ j ] = ( j == ucLabel ) ? 1.0f : -1.0f;
+                const float fOutput = xNetwork.GetOutput( j );
+#else
                 const float fExpectedSignal = ( j == ucLabel ) ? 1.0f : -1.0f;
+                const float fOutput = pxOutputLayer[ j ].GetResult();
+#endif
+                if( fOutput > fMax )
+                {
+                    fMax = fOutput;
+                    iMax = j;
+                }
                 if( j == ucLabel )
                 {
-                    if( pxOutputLayer[ j ].GetResult() <= 0.0f )
+                    if( fOutput <= 0.0f )
                     {
                         bCorrect = false;
                     }
                 }
-                else if( pxOutputLayer[ j ].GetResult() > 0.0f )
+                else if( fOutput > 0.0f )
                 {
                     bCorrect = false;
                 }
 
+#if !USE_OPTIMISED_NETWORK
                 pxOutputLayer[ j ].BackCycle( fExpectedSignal, kfLearningRate );
+#endif
             }
 
-            if( bCorrect )
+            if( iMax == ucLabel )
             {
                 ++iCount;
             }
+
+#if USE_OPTIMISED_NETWORK
+            xNetwork.BackPropagate( afOutputs, kfLearningRate, NNL::SigmoidDerivative );
+#endif
         }
+
+        xNetwork.Save();
     }
 
     NNL::FreeMNISTImages( pxTrainingImages );
@@ -135,33 +175,35 @@ int TestMNIST()
         CopyInputs( afImageInputs, pxTestImages[ i ].maaucPixels );
         
         // run network
+#if USE_OPTIMISED_NETWORK
+        xNetwork.FeedForward( afImageInputs, NNL::Sigmoid );
+#else
         xNetwork.Cycle();
-        
+#endif
+
         // what was the label?
-        bool bCorrect = true;
-        int iGuess = -1;
         const unsigned char ucLabel = pxTestLabels[ i ].mucLabel;
+        float fMax = -FLT_MAX;
+        int iMax = -1;
         for( int j = 0; j < kiOutputLayerSize; ++j )
         {
-            bool bGuessedThis = pxOutputLayer[ j ].GetResult() > 0.0f ;
-            if( j == ucLabel )
+            const float fOutput =
+#if USE_OPTIMISED_NETWORK
+                xNetwork.GetOutput( j );
+#else
+                pxOutputLayer[ j ].GetResult();
+#endif
+            if( fOutput > fMax )
             {
-                bCorrect = bCorrect && bGuessedThis;
-            }
-            else
-            {
-                bCorrect = bCorrect && !bGuessedThis;
-            }
-            
-            if( bCorrect )
-            {
-                iGuess = j;
+                fMax = fOutput;
+                iMax = j;
             }
         }
         
+        const bool bCorrect = iMax == ucLabel;
         if( !bCorrect )
         {
-            printf( "Guessed %d but it was %d\r\n", iGuess, ucLabel );
+            printf( "Guessed %d but it was %d\r\n", iMax, ucLabel );
         }
         
         iSuccessCount += bCorrect ? 1 : 0;
@@ -170,9 +212,11 @@ int TestMNIST()
     NNL::FreeMNISTImages( pxTestImages );
     NNL::FreeMNISTLabels( pxTestLabels );
     
+#if !USE_OPTIMISED_NETWORK
     delete[] pxOutputLayer;
     delete[] pxHiddenLayer;
     delete[] pxInputs;
+#endif
     
     return iSuccessCount;
 }
