@@ -14,7 +14,7 @@
 #include <cstdio>
 
 #define USE_OPTIMISED_NETWORK ( 0 )
-#define USE_TWO_LAYERS ( 1 )
+#define USE_TWO_LAYERS ( 0 )
 
 static const int kiTrainingRuns = 10;
 static const int kiHiddenLayerSize = 40;
@@ -22,7 +22,11 @@ static const int kiHiddenLayerSize = 40;
 static const int kiDeepLayerSize = 30;
 #endif
 static const int kiOutputLayerSize = 10;
+#if USE_OPTIMISED_NETWORK
+static const float kfLearningRate = 0.1f;
+#else
 static const float kfLearningRate = 0.004f;
+#endif
 
 void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 {
@@ -42,7 +46,7 @@ int TestMNIST()
 
 #if USE_OPTIMISED_NETWORK
     const int aiSizes[] = { kiHiddenLayerSize, kiOutputLayerSize };
-    AnalyticBackpropagatingNetwork< 2, 28* 28 > xNetwork( aiSizes );
+    NNL::AnalyticBackpropagatingNetwork< 2, 28* 28 > xNetwork( aiSizes );
 #else
     // create neurons
     // create input neurons and hook up input values.
@@ -116,7 +120,11 @@ int TestMNIST()
         for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
         {
             // SE - TEMP: ...
-            if( ( ( i + 1 ) % 250 ) == 0 )
+#if USE_OPTIMISED_NETWORK
+            if( ( ( i + 1 ) % 10000 ) == 0 )
+#else
+            if( ( ( i + 1 ) % 1000 ) == 0 )
+#endif
             {
                 printf( "Evaluating training set %d/%d... %d correct in this batch\r\n", i + 1, kiMNISTTrainingSetSize, iCount );
                 iCount = 0;
