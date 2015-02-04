@@ -13,12 +13,16 @@
 
 #include <cstdio>
 
-static const int kiTrainingRuns = 400;
+#define USE_OPTIMISED_NETWORK ( 0 )
+#define USE_TWO_LAYERS ( 1 )
+
+static const int kiTrainingRuns = 10;
 static const int kiHiddenLayerSize = 40;
+#if USE_TWO_LAYERS
+static const int kiDeepLayerSize = 30;
+#endif
 static const int kiOutputLayerSize = 10;
 static const float kfLearningRate = 0.004f;
-
-#define USE_OPTIMISED_NETWORK ( 0 )
 
 void CopyInputs( float* pfFloats, unsigned char aaucPixels[ 28 ][ 28 ] )
 {
@@ -55,16 +59,31 @@ int TestMNIST()
     NNL::SigmoidNeuron< 28 * 28 >* pxHiddenLayer =
         new NNL::SigmoidNeuron< 28 * 28 >[ kiHiddenLayerSize ];
     
+#if USE_TWO_LAYERS
+    NNL::SigmoidNeuron< kiHiddenLayerSize >* pxDeepLayer =
+        new NNL::SigmoidNeuron< kiHiddenLayerSize >[ kiDeepLayerSize ];
+
+    NNL::SigmoidNeuron< kiDeepLayerSize >* pxOutputLayer =
+        new NNL::SigmoidNeuron< kiDeepLayerSize >[ kiOutputLayerSize ];
+#else
+
     NNL::SigmoidNeuron< kiHiddenLayerSize >* pxOutputLayer =
         new NNL::SigmoidNeuron< kiHiddenLayerSize >[ kiOutputLayerSize ];
+#endif
     
     // create layers
     NNL::Layer xInput;
     NNL::Layer xHidden;
+#if USE_TWO_LAYERS
+    NNL::Layer xDeepHidden;
+#endif
     NNL::Layer xOutput;
     
     xInput.AddNeurons( pxInputs, 28 * 28 );
     xHidden.AddNeurons( pxHiddenLayer, kiHiddenLayerSize );
+#if USE_TWO_LAYERS
+    xDeepHidden.AddNeurons( pxDeepLayer, kiDeepLayerSize );
+#endif
     xOutput.AddNeurons( pxOutputLayer, kiOutputLayerSize );
     
     // create network
@@ -72,6 +91,9 @@ int TestMNIST()
     
     xNetwork.AddLayer( xInput );
     xNetwork.AddLayer( xHidden );
+#if USE_TWO_LAYERS
+    xNetwork.AddLayer( xDeepHidden );
+#endif
     xNetwork.AddLayer( xOutput );
 #endif
 
@@ -81,13 +103,20 @@ int TestMNIST()
 
     // train network
     int iCount = 0;
-    xNetwork.Load();
+    const char* const szPath =
+#if USE_TWO_LAYERS
+        "two_layer_data.dat";
+#else
+        "data.dat";
+#endif
+
+    xNetwork.Load( szPath );
     for( int k = 0; k < kiTrainingRuns; ++k )
     {
         for( int i = 0; i < kiMNISTTrainingSetSize; ++i )
         {
             // SE - TEMP: ...
-            if( ( ( i + 1 ) % 1000 ) == 0 )
+            if( ( ( i + 1 ) % 250 ) == 0 )
             {
                 printf( "Evaluating training set %d/%d... %d correct in this batch\r\n", i + 1, kiMNISTTrainingSetSize, iCount );
                 iCount = 0;
@@ -155,7 +184,7 @@ int TestMNIST()
 #endif
         }
 
-        xNetwork.Save();
+        xNetwork.Save( szPath );
     }
 
     NNL::FreeMNISTImages( pxTrainingImages );
