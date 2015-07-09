@@ -11,6 +11,7 @@
 #include "Neuron/Perceptron.h"
 #include "Neuron/SigmoidNeuron.h"
 
+#include <cfloat>
 #include <cstdio>
 
 #define USE_OPTIMISED_NETWORK ( 0 )
